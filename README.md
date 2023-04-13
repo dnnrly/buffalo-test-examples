@@ -46,3 +46,20 @@ Lastly, we have the linting workflow - this is just a good idea really.
 
 </details>
 
+<details>
+
+  <summary>Workflow tests</summary>
+
+Workflow tests allow you to put together several actions so that you can test more complex
+behaviours. This work by taking advantage of the session and other internal details to
+retain user state between actions.
+
+The idea is that you can define behaviour that works across different endpoints in your app
+so that you can think about a feature from beginning to end.
+
+## Important files
+
+* [Workflow tests](actions/workflow_test.go) - this is where the individual workflow tests live
+
+</details>
+
