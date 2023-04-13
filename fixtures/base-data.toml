@@ -1,0 +1,12 @@
+[[scenario]]
+name = "base-data"
+
+  [[scenario.table]]
+    name = "users"
+
+    [[scenario.table.row]]
+      id = "<%= uuidNamed("user1") %>"
+      email = "user1@example.com"
+      password_hash = "<%= hash("password") %>"
+      created_at = "<%= now() %>"
+      updated_at = "<%= now() %>"
