@@ -1,39 +1,48 @@
-# Welcome to Buffalo
+# Welcome to Buffalo Test Examples
 
-Thank you for choosing Buffalo for your web development needs.
+This repository aims to show some examples of how I've done different tests in
+Buffalo apps. I'm not saying that these are best-practice, just that I've found
+these techniques and patterns useful for validating what's happening.
 
-## Database Setup
+Please feel free to raise issues and discussions where you have a comment or
+suggestion. And I'm always happy for someone to raise a PR to show off what
+they've discovered too.
 
-It looks like you chose to set up your application using a database! Fantastic!
+# Examples
 
-The first thing you need to do is open up the "database.yml" file and edit it to use the correct usernames, passwords, hosts, etc... that are appropriate for your environment.
+Click on each of these named examples to see more details...
 
-You will also need to make sure that **you** start/install the database of your choice. Buffalo **won't** install and start it for you.
+<details>
+  <summary>Testing in Github Actions</summary>
 
-### Create Your Databases
+Here you can see an example of what's necessary to test your app using Github
+Actions.
 
-Ok, so you've edited the "database.yml" file and started your database, now Buffalo can create the databases in that file for you:
+## Important files
 
-```console
-buffalo pop create -a
+* [Compose file](docker-compose.yml) - this puts your tests together with the database
+* [database.yml](database.yml) - defines your database details
+* [Tests script](scripts/docker-test.sh) - This does the testing for you.
+* [PR workflow](.github/workflows/pr.yml) - this runs the tests using docker compose
+* [Linting workfow](.github/workflows/golangci-lint.yml) - this enforces common linting rules
+
+## What's happening
+
+Let's start with the Docker Compose file. This sets up the DB and makes your app depend on
+it, setting the database details using environment variables. These variables are consumed
+in `database.yml`. The compose file also gives access to all of the files in the project and
+runs the tests script, that sets up the DB by running the migrations and then executes your
+tests.
+
+If you would like to run these tests from inside docker locally, just use the following command:
+```shell
+docker-compose down && docker-compose up --remove-orphans --abort-on-container-exit test
 ```
 
-## Starting the Application
+The PR workflow is the bit that triggers your tests when you open a PR and push new commits
+to it.
 
-Buffalo ships with a command that will watch your application and automatically rebuild the Go binary and any assets for you. To do that run the "buffalo dev" command:
+Lastly, we have the linting workflow - this is just a good idea really.
 
-```console
-buffalo dev
-```
+<details>
 
-If you point your browser to [http://127.0.0.1:3000](http://127.0.0.1:3000) you should see a "Welcome to Buffalo!" page.
-
-**Congratulations!** You now have your Buffalo application up and running.
-
-## What Next?
-
-We recommend you heading over to [http://gobuffalo.io](http://gobuffalo.io) and reviewing all of the great documentation there.
-
-Good luck!
-
-[Powered by Buffalo](http://gobuffalo.io)

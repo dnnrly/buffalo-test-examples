@@ -1,0 +1,15 @@
+name: Validate for PR
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Buffalo test
+        run: docker-compose up --remove-orphans --force-recreate --abort-on-container-exit tests

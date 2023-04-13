@@ -8,7 +8,12 @@ development:
   pool: 5
 
 test:
-  url: {{envOr "TEST_DATABASE_URL" "postgres://postgres:postgres@127.0.0.1:5432/buffalo_test_examples_test?sslmode=disable"}}
+  dialect: {{envOr "TEST_DATABASE_DIALECT" "postgres"}}
+  database: {{envOr "TEST_DATABASE_DB" "buffalo_test_examples_test"}}
+  user: {{envOr "TEST_DATABASE_USER" "postgres"}}
+  password: {{envOr "TEST_DATABASE_PASS" "postgres"}}
+  host: {{envOr "TEST_DATABASE_HOST" "127.0.0.1"}}
+  pool: {{envOr "TEST_DATABASE_POOL" "5"}}
 
 production:
-  url: {{envOr "DATABASE_URL" "postgres://postgres:postgres@127.0.0.1:5432/buffalo_test_examples_production?sslmode=disable"}}
+  url: {{env "DATABASE_URL"}}

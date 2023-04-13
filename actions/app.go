@@ -78,7 +78,7 @@ func App() *buffalo.App {
 func translations() buffalo.MiddlewareFunc {
 	var err error
 	if T, err = i18n.New(locales.FS(), "en-US"); err != nil {
-		app.Stop(err)
+		_ = app.Stop(err)
 	}
 	return T.Middleware()
 }

@@ -1,0 +1,24 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: buffalo_test_examples_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+  tests:
+    image: gobuffalo/buffalo:v0.18.7
+    volumes:
+      - .:/project
+    working_dir: /project
+    environment:
+      # - TEST_DATABASE_URL=postgres://postgres:postgres@db:5432/buffalo_test_examples_test?sslmode=disable
+      - TEST_DATABASE_HOST=db
+      - TEST_DATABASE_DB=buffalo_test_examples_test
+      - TEST_DATABASE_USER=postgres
+      - TEST_DATABASE_PASS=postgres
+    command: scripts/docker-test.sh
+    depends_on:
+      - db
