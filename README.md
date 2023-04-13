@@ -48,6 +48,33 @@ Lastly, we have the linting workflow - this is just a good idea really.
 
 <details>
 
+  <summary>Little user testing tweaks</summary>
+
+This is a really simple one, I've created a couple of helpers that have been useful when
+defining user interactions.
+
+## Important files
+
+* [actions_test.go](actions/actions_test.go) - test helpers sit here
+* [fixture data](fixtures/base-data.toml) - test data to be inserted in to the database
+* [example test](actions/home_test.go) - `Test_HomeHandler_LoggedIn` shows a helper being used
+
+## What's happening
+
+These are a couple of very simple helpers to:
+
+1. Set the current session using the email address as the key
+2. Get the a user details by ID
+
+In both of these helpers, we just fail immediately if there's a problem. Don't bother
+propagating the error back up because this is a fundamental failure in the test environment.
+
+Also, don't forget to load the fixtures at the beginning of your tests!
+
+</details>
+
+<details>
+
   <summary>Workflow tests</summary>
 
 Workflow tests allow you to put together several actions so that you can test more complex
@@ -55,7 +82,8 @@ behaviours. This work by taking advantage of the session and other internal deta
 retain user state between actions.
 
 The idea is that you can define behaviour that works across different endpoints in your app
-so that you can think about a feature from beginning to end.
+so that you can think about a feature from beginning to end. It's been particularly powerful
+when used with tests around user auth.
 
 ## Important files
 
