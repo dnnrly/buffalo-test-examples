@@ -44,5 +44,5 @@ to it.
 
 Lastly, we have the linting workflow - this is just a good idea really.
 
-<details>
+</details>
 
