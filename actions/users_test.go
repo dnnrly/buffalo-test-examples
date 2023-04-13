@@ -25,7 +25,6 @@ func (as *ActionSuite) Test_Users_Create() {
 	res := as.HTML("/users").Post(u)
 	as.Equal(http.StatusFound, res.Code)
 
-	count, err = as.DB.Count("users")
-	as.NoError(err)
-	as.Equal(1, count)
+	found := as.getUserDetails("mark@example.com")
+	as.Empty(found.Password) // Make sure the password isn't persisted
 }
