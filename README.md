@@ -104,3 +104,34 @@ plugin. It does, however, have a few interesting features:
 
 </details>
 
+<details>
+
+  <summary>API tests</summary>
+
+This technique allows you simply and consisely validate your API endpoints. This is much lighter
+weight than traditional tests in Buffalo, allowing you to create them much more quickly and easily.
+
+## Important files
+
+* [API tests](actions/api_test.go) - API tests and surrounding assertion framework
+
+## What's happening
+
+For these tests, a mini framework has been created to help make sure that certain invariant about
+APIs are correct (like the Content-Type being correct) and make individual tests fit on one line.
+
+There are some interesting features to be aware of:
+
+* The function `ln` is used to create a name based on the line number for the test. I found
+ this made it easier to see which test was failing. If you have dozens of tests then it become hard to see what a long string of text maps to but a line number makes it super easy.
+* Test assertion failures output a lot of details about the individual request, response,
+ session etc. This makes it easy to see everything that's going on in your test at the same.
+ I found this makes it easier to quickly diagnose everthing that's going on in the test.
+* Finally, I chose to use an expression language (github.com/antonmedv/expr) to allow you to
+ add arbitrary assertions for each test, having access to all of the request, response, and
+ session information. This array of assertions allows you to check as much or as little as
+ you want for each test. It's a bit of an opinionated way of approaching the problem but I
+ found that it's worked out really well in the testing that I've done so far.
+
+</details>
+
