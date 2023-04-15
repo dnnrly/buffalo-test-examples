@@ -38,13 +38,11 @@ func (as *ActionSuite) Test_API() {
 		{ln(), "", "GET", "/users/" + uid("user1@example.com"), nil, http.StatusOK, "", []string{}},
 		{ln(), "", "GET", "/users/me", nil, http.StatusUnauthorized, "", []string{}},
 		{ln(), "", "POST", "/users/", &models.User{Email: "user99@example.com"}, http.StatusBadRequest, "", []string{`"current_user_id" not in session.Session.Values`}},
-		// {ln(), "", "POST", "/users/", &models.User{Email: "user99@example.com"}, 302, "/users/.+", []string{`"current_user_id" in session.Session.Values`}},
+		{ln(), "", "POST", "/users/", &models.User{Email: "user99@example.com", Password: "A", PasswordConfirmation: "A"}, 302, "/users/.+", []string{`"current_user_id" in session.Session.Values`}},
 
-		// // Logged in user
-		// {ln(), "user2@example.com", "GET", "/users/" + uid("user1@example.com"), nil, 200, "", []string{}},
-		// {ln(), "user2@example.com", "PUT", "/users/" + uid("user1@example.com"), &models.User{}, http.StatusUnauthorized, "", []string{"resp.Body.String() contains \"Unauthorized\""}},
-		// {ln(), "user1@example.com", "GET", "/users/me", nil, 200, "", []string{`resp.Body.String() contains "User 1"`}},
-		// {ln(), "user1@example.com", "PUT", "/users/" + uid("user1@example.com"), &models.User{}, 200, "", []string{`resp.Body.String() contains "a name"`}},
+		// // // Logged in user
+		{ln(), "user2@example.com", "GET", "/users/" + uid("user1@example.com"), nil, 200, "", []string{}},
+		{ln(), "user1@example.com", "GET", "/users/me", nil, 200, "", []string{`resp.Body.String() contains "user1"`}},
 	}
 
 	getResult := func(m, url string, body any) *httptest.JSONResponse {
@@ -83,8 +81,11 @@ func (as *ActionSuite) Test_API() {
 
 			as.NotNil(response, "%s", testDetails)
 			as.Equal(tt.Status, response.Code, "%s", testDetails)
-			as.Contains(response.HeaderMap.Get("Content-Type"), "application/json")
 			as.Regexp("^"+tt.Location+"$", response.Location(), "%s", testDetails)
+
+			if response.Code != 204 && (response.Code < 300 || response.Code >= 400) {
+				as.Contains(response.HeaderMap.Get("Content-Type"), "application/json", testDetails)
+			}
 
 			env := map[string]any{
 				"session":  as.Session,

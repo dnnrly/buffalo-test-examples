@@ -85,7 +85,7 @@ func App() *buffalo.App {
 		users.POST("/", UsersCreate)
 		users.GET("/me", UsersMe)
 		users.GET("/{id}", UsersShow)
-		auth.Middleware.Skip(Authorize, UsersNew, UsersCreate)
+		users.Middleware.Skip(Authorize, UsersNew, UsersCreate, UsersShow)
 
 		app.ServeFiles("/", http.FS(public.FS())) // serve files from the public directory
 	}
