@@ -5,6 +5,8 @@ import (
 
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/pop/v6"
+	"github.com/gobuffalo/x/responder"
+	"github.com/gofrs/uuid"
 	"github.com/pkg/errors"
 
 	"buffalo_test_examples/models"
@@ -37,9 +39,13 @@ func UsersCreate(c buffalo.Context) error {
 	}
 
 	c.Session().Set("current_user_id", u.ID)
-	c.Flash().Add("success", "Welcome to buffalo-test-examples!")
 
-	return c.Redirect(http.StatusFound, "/")
+	return responder.Wants("html", func(c buffalo.Context) error {
+		c.Flash().Add("success", "Welcome to buffalo-test-examples!")
+		return c.Redirect(http.StatusFound, "/")
+	}).Wants("json", func(c buffalo.Context) error {
+		return c.Redirect(http.StatusFound, "/users/"+u.ID.String())
+	}).Respond(c)
 }
 
 // SetCurrentUser attempts to find a user based on the current_user_id
@@ -64,6 +70,43 @@ func SetCurrentUser(next buffalo.Handler) buffalo.Handler {
 	}
 }
 
+// UsersShow default implementation.
+func UsersShow(c buffalo.Context) error {
+	uid := uuid.Must(uuid.FromString(c.Param("id")))
+
+	u := &models.User{}
+	tx := c.Value("tx").(*pop.Connection)
+	err := tx.Find(u, uid)
+	if err != nil {
+		return err
+	}
+
+	return responder.Wants("html", func(c buffalo.Context) error {
+		c.Set("email", u.Email)
+		return c.Render(http.StatusOK, r.HTML("users/show.plush.html"))
+	}).Wants("json", func(c buffalo.Context) error {
+		return c.Render(200, r.JSON(u))
+	}).Respond(c)
+}
+
+// UsersMe default implementation.
+func UsersMe(c buffalo.Context) error {
+	uid := c.Session().Get("current_user_id")
+	if uid == nil {
+		return c.Redirect(http.StatusFound, "/auth/new")
+	}
+
+	u := &models.User{}
+	tx := c.Value("tx").(*pop.Connection)
+	err := tx.Find(u, uid)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	c.Set("email", u.Email)
+	return c.Render(http.StatusOK, r.HTML("users/me.html"))
+}
+
 // Authorize require a user be logged in before accessing a route
 func Authorize(next buffalo.Handler) buffalo.Handler {
 	return func(c buffalo.Context) error {
@@ -75,8 +118,12 @@ func Authorize(next buffalo.Handler) buffalo.Handler {
 				return errors.WithStack(err)
 			}
 
-			c.Flash().Add("danger", "You must be authorized to see that page")
-			return c.Redirect(http.StatusFound, "/auth/new")
+			return responder.Wants("html", func(c buffalo.Context) error {
+				c.Flash().Add("danger", "You must be authorized to see that page")
+				return c.Redirect(http.StatusFound, "/auth/new")
+			}).Wants("json", func(c buffalo.Context) error {
+				return c.Render(200, r.JSON(errors.New("not authorized")))
+			}).Respond(c)
 		}
 		return next(c)
 	}
