@@ -101,6 +101,9 @@ plugin. It does, however, have a few interesting features:
  making it easier to read which assertions belong to which action
 * We don't assert much for each action, just enough to prove the right thing happened
 * Session state is maintained between actions
+* A single 'request' has been created at the beginning of the test. For the purposes of your
+tests, you can pretend that this object represents the browser. It will keep track of headers
+and cookies between requests so that you don't have to.
 
 </details>
 
