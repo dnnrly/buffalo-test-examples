@@ -20,6 +20,9 @@ COPY go.sum go.sum
 # and so that source changes don't invalidate our downloaded layer
 RUN go mod download
 
+ADD https://github.com/dnnrly/wait-for/releases/download/v0.0.1/wait-for_0.0.1_linux_386.tar.gz wait-for.tar.gz
+RUN gunzip wait-for.tar.gz && tar -xf wait-for.tar && mv wait-for /usr/local/bin
+
 ADD . .
 RUN buffalo build --static -o /bin/app
 

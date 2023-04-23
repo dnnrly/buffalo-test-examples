@@ -9,6 +9,7 @@ import (
 
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/buffalo-pop/v3/pop/popmw"
+	"github.com/gobuffalo/buffalo/render"
 	"github.com/gobuffalo/envy"
 	csrf "github.com/gobuffalo/mw-csrf"
 	forcessl "github.com/gobuffalo/mw-forcessl"
@@ -86,6 +87,10 @@ func App() *buffalo.App {
 		users.GET("/me", UsersMe)
 		users.GET("/{id}", UsersShow)
 		users.Middleware.Skip(Authorize, UsersNew, UsersCreate, UsersShow)
+
+		app.GET("/health", func(c buffalo.Context) error {
+			return c.Render(200, render.String("OK"))
+		})
 
 		app.ServeFiles("/", http.FS(public.FS())) // serve files from the public directory
 	}
