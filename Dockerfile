@@ -33,6 +33,7 @@ RUN apk add --no-cache ca-certificates
 WORKDIR /bin/
 
 COPY --from=builder /bin/app .
+COPY --from=builder /go/bin/buffalo .
 
 # Uncomment to run the binary in "production" mode:
 # ENV GO_ENV=production
@@ -43,5 +44,5 @@ ENV ADDR=0.0.0.0
 EXPOSE 3000
 
 # Uncomment to run the migrations before running the binary:
-# CMD /bin/app migrate; /bin/app
-CMD exec /bin/app
+CMD /bin/app migrate; /bin/app
+# CMD exec /bin/app

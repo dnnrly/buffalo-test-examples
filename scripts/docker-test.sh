@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -exo pipefail
 
 sleep 10 # Wait for the DB to become available
 

@@ -2,23 +2,54 @@ version: '3.1'
 
 services:
   db:
-    image: postgres
+    image: postgres:13.7
     restart: always
     environment:
       POSTGRES_DB: buffalo_test_examples_test
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+
   tests:
-    image: gobuffalo/buffalo:v0.18.7
+    build: .
     volumes:
       - .:/project
     working_dir: /project
     environment:
-      # - TEST_DATABASE_URL=postgres://postgres:postgres@db:5432/buffalo_test_examples_test?sslmode=disable
-      - TEST_DATABASE_HOST=db
-      - TEST_DATABASE_DB=buffalo_test_examples_test
-      - TEST_DATABASE_USER=postgres
-      - TEST_DATABASE_PASS=postgres
+      - TEST_DATABASE_URL=postgres://postgres:postgres@db:5432/buffalo_test_examples_test?sslmode=disable
     command: scripts/docker-test.sh
     depends_on:
       - db
+
+  # web:
+  #   build: .
+  #   ports:
+  #     - "3000"
+  #   environment:
+  #     - ADDR=0.0.0.0
+  #     - PORT=3000
+  #     - GO_ENV=test
+  #     - TEST_DATABASE_URL=postgres://postgres:postgres@db:5432/buffalo_test_examples_test?sslmode=disable
+  #   depends_on:
+  #     - db
+
+  # gherkin:
+  #   build:
+  #     context: .
+  #     dockerfile: tests.dockerfile
+  #   command: >
+  #     /bin/sh -c '
+  #       set -eo xtrace
+
+  #       wait-for -timeout 15s tcp:db:5432 http://web:3000
+
+  #       pushd /project/test
+
+  #       godog
+  #     '
+  #   volumes:
+  #     - .:/project
+  #   environment:
+  #     - TEST_DATABASE_URL=postgres://postgres:postgres@db:5432/buffalo_test_examples_test?sslmode=disable
+  #   depends_on:
+  #     - db
+  #     - web
