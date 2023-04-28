@@ -20,6 +20,9 @@ COPY go.sum go.sum
 # and so that source changes don't invalidate our downloaded layer
 RUN go mod download
 
+ADD https://github.com/dnnrly/wait-for/releases/download/v0.0.1/wait-for_0.0.1_linux_386.tar.gz wait-for.tar.gz
+RUN gunzip wait-for.tar.gz && tar -xf wait-for.tar && mv wait-for /usr/local/bin
+
 ADD . .
 RUN buffalo build --static -o /bin/app
 
@@ -30,6 +33,7 @@ RUN apk add --no-cache ca-certificates
 WORKDIR /bin/
 
 COPY --from=builder /bin/app .
+COPY --from=builder /go/bin/buffalo .
 
 # Uncomment to run the binary in "production" mode:
 # ENV GO_ENV=production
@@ -40,5 +44,5 @@ ENV ADDR=0.0.0.0
 EXPOSE 3000
 
 # Uncomment to run the migrations before running the binary:
-# CMD /bin/app migrate; /bin/app
-CMD exec /bin/app
+CMD /bin/app migrate; /bin/app
+# CMD exec /bin/app

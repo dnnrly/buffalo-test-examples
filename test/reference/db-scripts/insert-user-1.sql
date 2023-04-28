@@ -1,0 +1,1 @@
+INSERT INTO users (id, name, email, password_hash) VALUES ('b0c88c13-a070-459a-b93a-785cbe39d113', 'User1 Surname', 'user1@example.com', '$2a$12$thbAlwUzDjDRGBU0D7OSNu9oh9Lmmu0635cUP1lnISoihli6AXOu2');

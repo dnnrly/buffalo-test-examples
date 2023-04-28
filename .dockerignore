@@ -8,3 +8,6 @@ node_modules/
 !.yarn/versions
 *.log
 bin/
+
+docker-compose.*
+Makefile

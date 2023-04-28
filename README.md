@@ -138,3 +138,30 @@ There are some interesting features to be aware of:
 
 </details>
 
+
+
+<details>
+
+  <summary>Gherkin (Cucumber) tests</summary>
+
+Now, if you're not familiar with it, [Gherkin](https://www.guru99.com/gherkin-test-cucumber.html)
+is a format that allows you to specify the behaviour of your application in a way that it can
+be read by normal humans. You may have encountered it by using [Cucumber](https://cucumber.io/).
+I've found it a very powerful way of validating the behaviour of Buffalo app and other projects,
+even CLI tools.
+
+Why I specifically like these tests is that it forces you to think about the behaviour or your
+application from a user's point of view and driving tests using a seperate runtime allows you
+to test the entire built application as it will be delivered in to Production. With Buffalo
+unit tests, you're still really reaching in to the application to test things in a way that
+isn't quite the same as it's really used.
+
+## Important files
+
+* ...
+
+## What's happening
+
+...
+
+</details>

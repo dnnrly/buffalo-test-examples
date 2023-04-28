@@ -1,0 +1,10 @@
+{
+    "poll_id": "b517b6d9-a25e-4b02-97a2-31fec1fd8afc",
+    "name": "poll-request-1",
+    "type": "simple-marjority",
+    "options": [
+        "optA",
+        "opt-2",
+        "something else"
+    ]
+}
